@@ -1,0 +1,156 @@
+========================================================
+           JAPANESE LEARNING API DOCUMENTATION
+========================================================
+Base URL: http://localhost:3001
+Status: Functional
+Runtime: Bun + Elysia.js
+Database: Supabase (PostgreSQL)
+
+--------------------------------------------------------
+1. AUTHENTICATION (Public / Protected)
+--------------------------------------------------------
+
+[POST] /api/auth/register
+- Body: { email, password, username, full_name? }
+- Desc: Create a new user account.
+
+[POST] /api/auth/login
+- Body: { email, password }
+- Resp: { success, data: { user, token } }
+- Desc: Authenticate and get JWT token.
+
+[GET] /api/auth/me
+- Auth: Required (Bearer Token)
+- Desc: Get current logged-in user profile & stats.
+
+--------------------------------------------------------
+2. JAPANESE CONTENT (Public)
+--------------------------------------------------------
+
+HIRAGANA:
+[GET] /api/hiragana?type=basic|dakuon|...
+[GET] /api/hiragana/grouped
+[GET] /api/hiragana/:id
+
+KATAKANA:
+[GET] /api/katakana?type=basic|dakuon|...
+[GET] /api/katakana/grouped
+[GET] /api/katakana/:id
+
+KANJI:
+[GET] /api/kanji?level=N5|N4...&page=1&limit=20
+[GET] /api/kanji/search?q=sun
+[GET] /api/kanji/stats (count per level)
+[GET] /api/kanji/:id
+
+VOCABULARY:
+[GET] /api/vocabulary?level=N5&category=daily&page=1
+[GET] /api/vocabulary/search?q=taberu
+[GET] /api/vocabulary/categories
+[GET] /api/vocabulary/:id
+
+GRAMMAR:
+[GET] /api/grammar?level=N5&page=1
+[GET] /api/grammar/search?q=desu
+[GET] /api/grammar/stats
+[GET] /api/grammar/:id
+
+--------------------------------------------------------
+3. LEARNING FEATURES (Protected - Auth Required)
+--------------------------------------------------------
+
+FLASHCARDS (SRS - SM2 Algorithm):
+[GET] /api/flashcard/next?type=kanji
+- Desc: Get the next due card for review.
+[GET] /api/flashcard/due?type=vocabulary&limit=10
+- Desc: Get all cards currently due for review.
+[POST] /api/flashcard/review
+- Body: { content_type, content_id, result: 'again'|'hard'|'good'|'easy' }
+- Desc: Submit review and update next review date.
+[GET] /api/flashcard/stats
+- Desc: Get SRS summary (due counts, retention, etc).
+[POST] /api/flashcard/add
+- Body: { content_type, content_ids: [] }
+- Desc: Manually add items to user's flashcard deck.
+
+QUIZ SYSTEM:
+[POST] /api/quiz/start
+- Body: { type: 'kanji', level?: 'N5', question_count?: 10 }
+- Desc: Generate a new quiz instance.
+[POST] /api/quiz/submit
+- Body: { quiz_id, answers: [{ question_id, answer }] }
+- Desc: Grade the quiz and save results.
+[GET] /api/quiz/history?page=1
+- Desc: Get list of previous quiz attempts.
+[GET] /api/quiz/stats
+- Desc: Get quiz performance analytics.
+[GET] /api/quiz/:id
+- Desc: Get detailed result of a specific quiz attempt.
+
+PROGRESS TRACKING:
+[GET] /api/progress
+- Desc: Overal mastery percentage for all categories.
+[GET] /api/progress/daily
+- Desc: Summary of items studied today.
+[GET] /api/progress/weekly
+- Desc: Summary of activity over the last 7 days.
+[POST] /api/progress/update
+- Body: { content_type, content_id, mastery_delta?, correct: boolean }
+- Desc: Manually update progress for an item.
+
+ROADMAP (JLPT Pathway):
+[GET] /api/roadmap
+- Desc: Overview of all JLPT levels (N5-N1) and user completion.
+[GET] /api/roadmap/:level
+- Desc: Detailed stages for a level (e.g. N5 Stage 1, Stage 2...).
+[GET] /api/roadmap/stage/:id
+- Desc: Content items within a specific stage.
+[POST] /api/roadmap/stage/:id/progress
+- Body: { progress_percentage }
+- Desc: Update user's progress on a roadmap stage.
+
+--------------------------------------------------------
+4. ADMIN PANEL (Protected - Admin Role Required)
+--------------------------------------------------------
+
+USER MANAGEMENT:
+[GET] /api/admin/users?page=1
+- Desc: List all users with basic info.
+[GET] /api/admin/users/:id
+- Desc: Detailed user profile & progress stats.
+[PUT] /api/admin/users/:id/role
+- Body: { role: 'admin'|'user' }
+- Desc: Change user permissions.
+[DELETE] /api/admin/users/:id
+- Desc: Remove user and all associated data.
+[GET] /api/admin/users/analytics/overview
+- Desc: Platform-wide stats (total users, active users, content counts).
+
+CONTENT MANAGEMENT (CRUD):
+Endpoints below exist for: /hiragana, /katakana, /kanji, /vocabulary, /grammar, /curriculum
+
+[POST] /api/admin/<type>
+- Desc: Create new content item.
+[PUT] /api/admin/<type>/:id
+- Desc: Update existing content item.
+[DELETE] /api/admin/<type>/:id
+- Desc: Delete content item.
+
+[POST] /api/admin/kanji/bulk
+[POST] /api/admin/vocabulary/bulk
+- Body: { <type>: [] }
+- Desc: Bulk upload multiple items at once.
+
+--------------------------------------------------------
+5. UTILITIES
+--------------------------------------------------------
+
+[GET] /health
+- Desc: Returns server status, timestamp, and version.
+
+[GET] /docs
+- Desc: Interactive Swagger UI (OpenAPI) for live testing.
+
+========================================================
+                END OF DOCUMENTATION
+========================================================

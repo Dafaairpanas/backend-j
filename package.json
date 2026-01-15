@@ -1,15 +1,24 @@
 {
-  "name": "api-japan",
-  "version": "1.0.50",
+  "name": "japanese-learning-api",
+  "version": "1.0.0",
+  "description": "Japanese Learning API with Elysia.js and Bun",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "seed": "bun src/db/seed.ts",
+    "db:migrate": "bun src/db/migrate.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "elysia": "^1.0.12",
+    "@elysiajs/cors": "^1.0.2",
+    "@elysiajs/jwt": "^1.0.2",
+    "@elysiajs/swagger": "^1.0.3",
+    "@supabase/supabase-js": "^2.39.0",
+    "bcrypt": "^5.1.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "bun-types": "latest"
   },
-  "module": "src/index.js"
+  "module": "src/index.ts"
 }
