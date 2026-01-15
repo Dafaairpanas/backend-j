@@ -1,9 +1,7 @@
 import { app } from '../src/app';
 
-export const config = {
-  runtime: 'edge', // Pakai Edge Runtime (lebih cepat & support standard Web API mirip Bun)
-};
-
-export default async function handler(request: Request) {
-  return app.fetch(request);
+// Vercel Serverless Function (Node.js runtime)
+export default function handler(request: Request, response: any) {
+  // Elysia handle method adapts correctly to standard Request objects
+  return app.handle(request);
 }
