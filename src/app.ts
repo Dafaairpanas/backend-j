@@ -70,6 +70,13 @@ export const app = new Elysia()
     timestamp: new Date().toISOString(),
     version: '1.0.0',
   }))
+
+  // Ignore favicon
+  .get('/favicon.ico', ({ set }) => {
+    set.status = 204;
+    return '';
+  })
+
   
   // API info
   .get('/api', () => ({
