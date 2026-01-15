@@ -1,7 +1,6 @@
 {
   "installCommand": "bun install",
   "buildCommand": "bun install",
-  "framework": "other",
   "rewrites": [
     {
       "source": "/(.*)",
