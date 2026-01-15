@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia';
+import { Elysia, Context } from 'elysia';
 import { jwt } from '@elysiajs/jwt';
 import { supabase } from '../config/supabase';
 import { errorResponse } from '../utils/response';
@@ -18,8 +18,9 @@ export const jwtPlugin = jwt({
  */
 export const authMiddleware = new Elysia({ name: 'auth' })
   .use(jwtPlugin)
-  .derive(async ({ jwt, headers, set }) => {
-    const authorization = headers.authorization;
+  .derive(async (context: Context & { jwt: any }) => {
+    const { headers, jwt, set } = context;
+    const authorization = headers['authorization'];
 
     if (!authorization) {
       set.status = 401;
@@ -83,7 +84,7 @@ export const authMiddleware = new Elysia({ name: 'auth' })
       };
     }
   })
-  .onBeforeHandle(({ authError, set }) => {
+  .onBeforeHandle(({ authError, set }: { authError: any, set: Context['set'] }) => {
     if (authError) {
       set.status = 401;
       return authError;
@@ -91,12 +92,13 @@ export const authMiddleware = new Elysia({ name: 'auth' })
   });
 
 /**
- * Optional auth middleware - doesn't require auth but attaches user if token present
+ * Optional auth middleware
  */
 export const optionalAuthMiddleware = new Elysia({ name: 'optional-auth' })
   .use(jwtPlugin)
-  .derive(async ({ jwt, headers }) => {
-    const authorization = headers.authorization;
+  .derive(async (context: Context & { jwt: any }) => {
+    const { headers, jwt } = context;
+    const authorization = headers['authorization'];
 
     if (!authorization) {
       return { user: null, userId: null };

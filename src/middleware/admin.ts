@@ -1,21 +1,26 @@
-import { Elysia } from 'elysia';
-import { authMiddleware } from './auth';
+import { Elysia, Context } from 'elysia';
 import { errorResponse } from '../utils/response';
 
 /**
- * Admin middleware - requires user to be authenticated with admin role
+ * Admin middleware - checks if user has admin role
+ * Must remain separate from auth middleware to maintain chain integrity
  */
 export const adminMiddleware = new Elysia({ name: 'admin' })
-  .use(authMiddleware)
-  .onBeforeHandle((context: any) => {
+  .derive((context: any) => {
     const { user, set } = context;
-    if (!user) {
-      set.status = 401;
-      return errorResponse('Authentication required', 'UNAUTHORIZED');
+
+    if (!user || user.role !== 'admin') {
+      set.status = 403;
+      return {
+        adminError: errorResponse('Admin access required', 'FORBIDDEN'),
+      };
     }
 
-    if (user.role !== 'admin') {
+    return { adminError: null };
+  })
+  .onBeforeHandle(({ adminError, set }: { adminError: any, set: Context['set'] }) => {
+    if (adminError) {
       set.status = 403;
-      return errorResponse('Admin access required', 'FORBIDDEN');
+      return adminError;
     }
   });

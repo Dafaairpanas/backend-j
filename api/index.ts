@@ -1,9 +1,6 @@
 import { app } from '../src/app';
 
-export const config = {
-  runtime: 'edge', // Sekarang AMAN karena pakai bcryptjs
-};
-
-export default async function handler(request: Request) {
-  return app.fetch(request);
+// Vercel Serverless Function (Standard Node.js)
+export default function handler(request: Request, response: any) {
+  return app.handle(request);
 }
