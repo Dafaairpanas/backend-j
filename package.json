@@ -6,18 +6,19 @@
     "dev": "bun --watch src/index.ts",
     "start": "bun src/index.ts",
     "seed": "bun src/db/seed.ts",
-    "db:migrate": "bun src/db/migrate.ts"
+    "db:migrate": "bun src/db/migrate.ts",
+    "build": "echo 'No build step required'"
   },
   "dependencies": {
-    "elysia": "^1.0.12",
     "@elysiajs/cors": "^1.0.2",
     "@elysiajs/jwt": "^1.0.2",
     "@elysiajs/swagger": "^1.0.3",
     "@supabase/supabase-js": "^2.39.0",
-    "bcrypt": "^5.1.1"
+    "@types/bcryptjs": "^3.0.0",
+    "bcryptjs": "^3.0.3",
+    "elysia": "^1.0.12"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
     "bun-types": "latest"
   },
   "module": "src/index.ts"

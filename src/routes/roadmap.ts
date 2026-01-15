@@ -21,7 +21,8 @@ const roadmapRoutes = new Elysia({ prefix: '/api/roadmap' })
     
     const result = await roadmapController.getAllRoadmaps(userId) as any;
     set.status = result.status;
-    return result.error || result.data;
+    if (result.error) return result.error;
+    return result.data.data;
   })
   
   // Get roadmap for specific level (optional auth)
@@ -42,11 +43,13 @@ const roadmapRoutes = new Elysia({ prefix: '/api/roadmap' })
         userId
       ) as any;
       set.status = result.status;
-      return result.error || result.data;
+      if (result.error) return result.error;
+      return result.data.data;
     } else {
       const result = await roadmapController.getRoadmap(params.level) as any;
       set.status = result.status;
-      return result.error || result.data;
+      if (result.error) return result.error;
+      return result.data.data;
     }
   })
   
@@ -70,7 +73,8 @@ const roadmapRoutes = new Elysia({ prefix: '/api/roadmap' })
     
     const result = await roadmapController.getStageDetails(id, userId) as any;
     set.status = result.status;
-    return result.error || result.data;
+    if (result.error) return result.error;
+    return result.data.data;
   })
   
   // Update roadmap progress (protected)
@@ -99,7 +103,8 @@ const roadmapRoutes = new Elysia({ prefix: '/api/roadmap' })
       body.progress_percentage
     ) as any;
     set.status = result.status;
-    return result.error || result.data;
+    if (result.error) return result.error;
+    return result.data.data;
   }, {
     body: t.Object({
       progress_percentage: t.Number(),

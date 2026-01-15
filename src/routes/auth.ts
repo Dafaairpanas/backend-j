@@ -9,46 +9,38 @@ const authRoutes = new Elysia({ prefix: '/api/auth' })
   // Register
   .post(
     '/register',
-    async ({ body, jwt, set }) => {
-      const result = await authController.register(body, jwt);
-      set.status = result.status;
-      return result.error || result.data;
-    },
+    (context) => authController.register(context as any),
     { body: registerSchema }
   )
   
   // Login
   .post(
     '/login',
-    async ({ body, jwt, set }) => {
-      const result = await authController.login(body, jwt);
-      set.status = result.status;
-      return result.error || result.data;
-    },
+    (context) => authController.login(context as any),
     { body: loginSchema }
   )
   
   // Get current user (protected)
-  .get('/me', async ({ headers, jwt, set }) => {
+  .get('/me', async (context) => {
+    const { headers, jwt, set } = context;
     const token = headers.authorization?.replace('Bearer ', '');
     
     if (!token) {
       set.status = 401;
-      return { success: false, error: { message: 'Unauthorized' } };
+      return { success: false, error: { message: 'Unauthorized', code: 'UNAUTHORIZED' } };
     }
 
     const payload = await jwt.verify(token) as any;
     if (!payload) {
       set.status = 401;
-      return { success: false, error: { message: 'Invalid token' } };
+      return { success: false, error: { message: 'Invalid token', code: 'INVALID_TOKEN' } };
     }
 
-    const result = await authController.getCurrentUser(payload.userId);
-    set.status = result.status;
-    return result.error || result.data;
+    const userPayload = { id: payload.sub, ...payload };
+    return authController.getProfile({ ...context, user: userPayload });
   })
   
-  // Logout (just returns success - client should remove token)
+  // Logout
   .post('/logout', () => ({
     success: true,
     message: 'Logged out successfully',

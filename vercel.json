@@ -1,9 +1,5 @@
 {
   "outputDirectory": "public",
-  "installCommand": "bun install",
-  "buildCommand": null,
-  "framework": null,
-  "bunVersion": "1.0.0",
   "rewrites": [
     {
       "source": "/api/(.*)",

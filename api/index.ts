@@ -1,7 +1,9 @@
 import { app } from '../src/app';
 
-// Vercel Serverless Function (Node.js runtime)
-export default function handler(request: Request, response: any) {
-  // Elysia handle method adapts correctly to standard Request objects
-  return app.handle(request);
+export const config = {
+  runtime: 'edge', // Sekarang AMAN karena pakai bcryptjs
+};
+
+export default async function handler(request: Request) {
+  return app.fetch(request);
 }
