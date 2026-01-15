@@ -1,17 +1,22 @@
 {
+  "outputDirectory": "public",
   "installCommand": "bun install",
-  "buildCommand": "bun install",
+  "buildCommand": null,
   "framework": null,
   "bunVersion": "1.0.0",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
       "destination": "/api/index.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
     }
   ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
         { "key": "Access-Control-Allow-Origin", "value": "*" },
